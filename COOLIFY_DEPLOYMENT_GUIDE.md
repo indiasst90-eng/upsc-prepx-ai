@@ -2,7 +2,7 @@
 
 I have already done the hard work for you:
 1.  **Code Saved**: I committed all your changes (UI, Admin Panel, Configs).
-2.  **Code Uploaded**: I successfully pushed everything to your GitHub repository (`https://github.com/upscvideodeploy-render/NextJS.git`).
+2.  **Code Uploaded**: I successfully pushed everything to your GitHub repository (`https://github.com/indiasst90-eng/upsc-prepx-ai.git`).
 3.  **Server Configured**: I set up the VPS directories and SSH access.
 
 Now, you just need to do the final "Click" part in your browser.
@@ -18,7 +18,7 @@ Now, you just need to do the final "Click" part in your browser.
 2.  Select **"Git Repository"** (or "Public Repository").
 3.  Paste your Repository URL:
     ```
-    https://github.com/upscvideodeploy-render/NextJS.git
+    https://github.com/indiasst90-eng/upsc-prepx-ai.git
     ```
 4.  Click **"Check Repository"**.
 5.  Select **"main"** or **"master"** branch (it is likely `master` based on my push).
