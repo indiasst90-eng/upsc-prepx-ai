@@ -1,0 +1,19 @@
+{
+  "name": "@prepx/vps",
+  "version": "1.0.0",
+  "description": "VPS Services client for connecting to Manim, Revideo, and other services",
+  "main": "index.ts",
+  "types": "index.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@upsc-prepx-ai/config": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0",
+    "vitest": "^1.2.0"
+  }
+}

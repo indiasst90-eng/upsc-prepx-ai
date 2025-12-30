@@ -1,0 +1,19 @@
+{
+  "name": "@upsc-prepx-ai/crawl4ai",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Crawl4AI integration for UPSC current affairs from allowed domains",
+  "main": "index.ts",
+  "types": "index.ts",
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "typescript": "^5.3.0"
+  }
+}

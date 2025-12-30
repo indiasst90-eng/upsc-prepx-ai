@@ -1,0 +1,40 @@
+{
+  "name": "upsc-prepx-ai",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\" --ignore-path .gitignore",
+    "test": "turbo run test",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "@types/node": "^25.0.3",
+    "dotenv": "^17.2.3",
+    "playwright": "^1.57.0",
+    "prettier": "^3.1.0",
+    "ts-node": "^10.9.2",
+    "turbo": "latest",
+    "typescript": "^5.3.0"
+  },
+  "packageManager": "pnpm@8.15.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "pnpm": {
+    "overrides": {
+      "@react-three/fiber>react": "18.3.1",
+      "@react-three/fiber>react-dom": "18.3.1",
+      "@react-three/drei>react": "18.3.1",
+      "@react-three/drei>react-dom": "18.3.1"
+    }
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.39.0"
+  }
+}
