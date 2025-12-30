@@ -1,0 +1,297 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+ 
+@layer base {
+  :root {
+    --background: 222.2 84% 4.9%; /* Slate 950 */
+    --foreground: 210 40% 98%; /* Slate 50 */
+ 
+    --card: 0 0% 100%; /* White cards as seen in images */
+    --card-foreground: 222.2 84% 4.9%;
+ 
+    --popover: 0 0% 100%;
+    --popover-foreground: 222.2 84% 4.9%;
+ 
+    --primary: 217.2 91.2% 59.8%; /* Blue */
+    --primary-foreground: 222.2 47.4% 11.2%;
+ 
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+ 
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+ 
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+ 
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+ 
+    --border: 214.3 31.8% 91.4%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 221.2 83.2% 53.3%;
+ 
+    --radius: 0.75rem;
+
+    /* Custom Neon Variables */
+    --neon-blue: #00f3ff;
+    --neon-purple: #bc13fe;
+    --neon-green: #00ff9d;
+    --neon-pink: #ff006b;
+
+    /* Dynamic Background Variables (AI-driven theme system) */
+    --bg-dynamic-primary: linear-gradient(180deg, hsl(222, 84%, 4.9%) 0%, hsl(217, 32%, 12%) 100%);
+    --bg-dynamic-hero: radial-gradient(ellipse at top, hsl(217, 91%, 20%) 0%, transparent 50%);
+    --bg-dynamic-section: linear-gradient(135deg, hsl(217, 32%, 10%) 0%, hsl(222, 84%, 4.9%) 100%);
+    --bg-dynamic-overlay: linear-gradient(180deg, transparent 0%, hsl(222, 84%, 4.9%) 100%);
+
+    /* Glassmorphism Variables */
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-blur: 24px;
+
+    /* Neumorphism Variables */
+    --neuro-shadow-dark: rgba(0, 0, 0, 0.3);
+    --neuro-shadow-light: rgba(255, 255, 255, 0.02);
+  }
+ 
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+ 
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+ 
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+ 
+    --primary: 217.2 91.2% 59.8%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+ 
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+ 
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+ 
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+ 
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+ 
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 224.3 76.3% 48%;
+  }
+}
+ 
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom Component Classes from previous globals.css preserved but updated */
+@layer components {
+  /* Neumorphic Button Variants */
+  .btn-primary {
+    @apply px-6 py-3 rounded-xl font-semibold text-white transition-all duration-200;
+    background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-purple) 100%);
+    box-shadow: 0 4px 15px rgba(0, 243, 255, 0.3),
+                inset 0 1px 2px rgba(255, 255, 255, 0.1);
+  }
+  
+  .btn-primary:hover {
+    box-shadow: 0 6px 20px rgba(0, 243, 255, 0.5),
+                inset 0 1px 2px rgba(255, 255, 255, 0.1);
+    transform: translateY(-1px);
+  }
+
+  .btn-secondary {
+    @apply px-6 py-3 rounded-xl font-semibold text-foreground transition-all duration-200;
+    background: rgba(30, 30, 50, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 3px 3px 6px var(--neuro-shadow-dark),
+                -2px -2px 4px var(--neuro-shadow-light);
+  }
+  
+  .btn-secondary:hover {
+    background: rgba(40, 40, 60, 0.6);
+    box-shadow: 4px 4px 8px var(--neuro-shadow-dark),
+                -3px -3px 6px var(--neuro-shadow-light);
+  }
+
+  .btn-ghost {
+    @apply px-6 py-3 rounded-xl font-semibold text-foreground transition-all duration-200;
+    background: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .btn-danger {
+    @apply px-6 py-3 rounded-xl font-semibold text-white transition-all duration-200;
+    background: linear-gradient(135deg, #ff006b 0%, #ff0044 100%);
+    box-shadow: 0 4px 15px rgba(255, 0, 107, 0.3);
+  }
+  
+  .btn-danger:hover {
+    box-shadow: 0 6px 20px rgba(255, 0, 107, 0.5);
+    transform: translateY(-1px);
+  }
+
+  .neon-glass {
+    @apply bg-slate-900/60 backdrop-blur-xl border border-white/10;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-neon-blue via-neon-purple to-neon-pink bg-clip-text text-transparent;
+  }
+  
+  /* Glassmorphism Components */
+  .glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--glass-blur));
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    @apply rounded-2xl;
+  }
+  
+  .glass-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 4px 20px rgba(0, 243, 255, 0.2);
+  }
+  
+  .glass-panel {
+    background: rgba(15, 15, 25, 0.4);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    @apply rounded-2xl;
+  }
+
+  .glass-input {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    @apply rounded-xl px-4 py-3 text-foreground transition-all duration-200;
+  }
+  
+  .glass-input:focus {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+    outline: none;
+  }
+
+  /* Neumorphic Components */
+  .neuro-card {
+    background: rgba(20, 20, 35, 0.5);
+    box-shadow: 6px 6px 12px var(--neuro-shadow-dark),
+                -4px -4px 8px var(--neuro-shadow-light);
+    @apply rounded-2xl p-6;
+  }
+
+  .neuro-input {
+    background: rgba(20, 20, 35, 0.4);
+    box-shadow: inset 3px 3px 6px var(--neuro-shadow-dark),
+                inset -2px -2px 4px var(--neuro-shadow-light);
+    @apply rounded-xl px-4 py-3 text-foreground transition-all duration-200;
+    border: none;
+  }
+  
+  .neuro-input:focus {
+    box-shadow: inset 4px 4px 8px var(--neuro-shadow-dark),
+                inset -3px -3px 6px var(--neuro-shadow-light),
+                0 0 0 2px var(--neon-blue);
+    outline: none;
+  }
+}
+
+/* Utility Animations */
+@layer utilities {
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-pulse-glow {
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  .animate-shimmer {
+    animation: shimmer 2s linear infinite;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 200ms ease-out forwards;
+  }
+
+  .animate-slide-in {
+    animation: slideIn 300ms ease-out forwards;
+  }
+
+  /* Accessibility: Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    .animate-float,
+    .animate-pulse-glow,
+    .animate-shimmer,
+    .animate-fade-in,
+    .animate-slide-in {
+      animation: none;
+    }
+  }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 20px rgba(0, 243, 255, 0.3); }
+  50% { box-shadow: 0 0 40px rgba(0, 243, 255, 0.6); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-700/50 rounded-full hover:bg-slate-600/50;
+}

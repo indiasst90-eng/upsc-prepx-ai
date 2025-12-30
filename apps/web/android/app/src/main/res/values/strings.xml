@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">UPSC PrepX</string>
+    <string name="title_activity_main">UPSC PrepX</string>
+    <string name="package_name">com.upscprepx.app</string>
+    <string name="custom_url_scheme">com.upscprepx.app</string>
+</resources>
