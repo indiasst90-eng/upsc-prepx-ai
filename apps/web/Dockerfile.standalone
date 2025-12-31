@@ -16,8 +16,10 @@ RUN npm install --legacy-peer-deps
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-# Copy only the web app source
+# Copy web app source
 COPY apps/web/ .
+# Use standalone tsconfig for Docker builds (doesn't extend parent)
+RUN mv tsconfig.docker.json tsconfig.json
 
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
