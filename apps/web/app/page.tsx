@@ -26,7 +26,7 @@ export default function Home() {
           </Link>
 
           <a
-            href="http://localhost:3001"
+            href={process.env.NEXT_PUBLIC_ADMIN_URL || "http://89.117.60.144:3004"}
             target="_blank"
             rel="noopener noreferrer"
             className="neon-glass neon-glass-hover p-8 rounded-2xl text-left transition-all duration-300"
