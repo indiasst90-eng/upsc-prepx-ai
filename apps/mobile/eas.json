@@ -22,9 +22,6 @@
         "buildType": "apk",
         "gradleCommand": ":app:assembleRelease",
         "credentialsSource": "local"
-      },
-      "env": {
-        "NPM_TOKEN": ""
       }
     },
     "production": {
