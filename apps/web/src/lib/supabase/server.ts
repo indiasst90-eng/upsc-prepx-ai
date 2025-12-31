@@ -2,8 +2,24 @@
 // Handles cookie-based auth automatically
 
 import { createServerClient } from '@supabase/ssr'
+import { createClient } from '@supabase/supabase-js'
 import { cookies } from 'next/headers'
 import { Database } from '@/types/database.types'
+
+// Lazy-initialized admin client for API routes (uses service role key)
+let adminClient: ReturnType<typeof createClient> | null = null;
+
+export function getAdminClient() {
+  if (!adminClient) {
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!url || !key) {
+      throw new Error('Supabase environment variables not configured');
+    }
+    adminClient = createClient(url, key);
+  }
+  return adminClient;
+}
 
 export async function createSupabaseServerClient() {
   const cookieStore = await cookies()
