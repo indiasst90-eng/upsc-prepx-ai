@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { getSupabaseBrowserClient } from '@/lib/supabase/client';
 import { debounce } from '@/lib/utils';
@@ -78,7 +78,8 @@ function SearchSkeleton() {
   );
 }
 
-export default function SearchPage() {
+export default function SearchPageWrapper() { return (<Suspense fallback={<div>Loading...</div>}><SearchPage /></Suspense>); }
+function SearchPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const { user } = useAuth();
@@ -841,3 +842,4 @@ export default function SearchPage() {
     </div>
   );
 }
+

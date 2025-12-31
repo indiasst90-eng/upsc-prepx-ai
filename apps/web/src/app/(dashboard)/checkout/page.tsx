@@ -9,7 +9,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@supabase/supabase-js';
 
@@ -33,7 +33,8 @@ interface Plan {
   features: Record<string, unknown>;
 }
 
-export default function CheckoutPage() {
+export default function CheckoutPageWrapper() { return (<Suspense fallback={<div>Loading...</div>}><CheckoutPage /></Suspense>); }
+function CheckoutPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const planSlug = searchParams.get('plan') || 'monthly';
@@ -342,3 +343,4 @@ export default function CheckoutPage() {
     </div>
   );
 }
+

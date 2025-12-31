@@ -16,7 +16,7 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createClient } from '@supabase/supabase-js';
 
@@ -59,7 +59,8 @@ const STATUS_COLORS = {
   paused: 'bg-gray-500/20 text-gray-400 border-gray-500/50',
 };
 
-export default function SubscriptionPage() {
+export default function SubscriptionPageWrapper() { return (<Suspense fallback={<div>Loading...</div>}><SubscriptionPage /></Suspense>); }
+function SubscriptionPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const showSuccess = searchParams.get('success') === 'true';
@@ -428,3 +429,4 @@ export default function SubscriptionPage() {
     </div>
   );
 }
+

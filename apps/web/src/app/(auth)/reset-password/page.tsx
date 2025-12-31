@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { getSupabaseBrowserClient } from '@/lib/supabase/client';
 import { z } from 'zod';
@@ -17,7 +17,8 @@ const resetPasswordSchema = z.object({
 
 type ResetPasswordForm = z.infer<typeof resetPasswordSchema>;
 
-export default function ResetPasswordPage() {
+export default function ResetPasswordPageWrapper() { return (<Suspense fallback={<div>Loading...</div>}><ResetPasswordPage /></Suspense>); }
+function ResetPasswordPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [isLoading, setIsLoading] = useState(false);
@@ -157,3 +158,4 @@ export default function ResetPasswordPage() {
     </div>
   );
 }
+

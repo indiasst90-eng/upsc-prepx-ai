@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { getSupabaseBrowserClient } from '@/lib/supabase/client';
 
@@ -209,7 +209,8 @@ const LEVELS = [
   { id: 'advanced', label: 'Advanced', description: 'In-depth exploration' },
 ];
 
-export default function NotesPage() {
+export default function NotesPageWrapper() { return (<Suspense fallback={<div>Loading...</div>}><NotesPage /></Suspense>); }
+function NotesPage() {
   const searchParams = useSearchParams();
   const supabase = getSupabaseBrowserClient(
   );
@@ -586,3 +587,4 @@ export default function NotesPage() {
     </div>
   );
 }
+

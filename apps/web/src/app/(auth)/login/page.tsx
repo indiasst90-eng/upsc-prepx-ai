@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, Suspense } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
@@ -8,7 +8,8 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useAuth } from '@/app/providers/AuthProvider'
 import { loginSchema, type LoginFormData } from '@/lib/validations/auth'
 
-export default function LoginPage() {
+export default function LoginPageWrapper() { return (<Suspense fallback={<div>Loading...</div>}><LoginPage /></Suspense>); }
+function LoginPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { signIn, signInWithGoogle } = useAuth()
@@ -177,3 +178,4 @@ export default function LoginPage() {
     </div>
   )
 }
+

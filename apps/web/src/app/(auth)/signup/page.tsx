@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import Link from 'next/link'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useForm } from 'react-hook-form'
@@ -24,7 +24,8 @@ const signupSchemaWithTerms = z.object({
 
 type SignupFormWithTerms = z.infer<typeof signupSchemaWithTerms>
 
-export default function SignupPage() {
+export default function SignupPageWrapper() { return (<Suspense fallback={<div>Loading...</div>}><SignupPage /></Suspense>); }
+function SignupPage() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const { signUp } = useAuth()
@@ -236,3 +237,4 @@ export default function SignupPage() {
     </div>
   );
 }
+
