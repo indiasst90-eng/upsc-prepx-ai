@@ -1,17 +1,31 @@
-import "./global.css";
 import { StatusBar } from 'expo-status-bar';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 export default function App() {
   return (
-    <View className="flex-1 items-center justify-center bg-white">
-      <Text className="text-xl font-bold text-blue-500">
-        UPSC PrepX Mobile
-      </Text>
-      <Text className="mt-2 text-gray-600">
-        NativeWind is working!
-      </Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>UPSC PrepX AI</Text>
+      <Text style={styles.subtitle}>Mobile App</Text>
       <StatusBar style="auto" />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#1a1a2e',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  subtitle: {
+    marginTop: 8,
+    fontSize: 16,
+    color: '#a0a0a0',
+  },
+});
