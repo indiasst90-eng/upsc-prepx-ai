@@ -3,7 +3,7 @@
 import * as React from "react"
 import { motion } from "framer-motion"
 import { 
-  CloudUpload, 
+  Upload, 
   Sparkles, 
   HelpCircle, 
   Newspaper, 
@@ -112,7 +112,7 @@ export default function DashboardPage() {
       {/* Feature Grid */}
       <div className="px-4 grid grid-cols-2 gap-4 mb-8">
         <FeatureCard 
-          icon={<CloudUpload className="text-blue-500" />} 
+          icon={<Upload className="text-blue-500" />}
           title="Upload Content" 
           sub="PDFs, Images & More"
           color="bg-blue-50 dark:bg-blue-900/20"
