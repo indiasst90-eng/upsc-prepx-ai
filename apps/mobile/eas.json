@@ -3,6 +3,10 @@
     "version": ">= 6.0.0"
   },
   "build": {
+    "base": {
+      "node": "20.17.0",
+      "pnpm": "9.1.2"
+    },
     "development": {
       "developmentClient": true,
       "distribution": "internal",
@@ -12,14 +16,19 @@
       }
     },
     "preview": {
+      "extends": "base",
       "distribution": "internal",
       "android": {
         "buildType": "apk",
         "gradleCommand": ":app:assembleRelease",
         "credentialsSource": "local"
+      },
+      "env": {
+        "NPM_TOKEN": ""
       }
     },
     "production": {
+      "extends": "base",
       "android": {
         "buildType": "app-bundle",
         "gradleCommand": ":app:bundleRelease"
