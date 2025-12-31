@@ -26,9 +26,10 @@ interface UpdateCouponRequest {
  */
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id: couponId } = await params;
     // Verify admin authentication
     const authHeader = request.headers.get('authorization');
     if (!authHeader) {
@@ -54,7 +55,6 @@ export async function PATCH(
     }
 
     const body: UpdateCouponRequest = await request.json();
-    const couponId = params.id;
 
     // Update coupon
     const { data: coupon, error } = await supabase
@@ -90,9 +90,10 @@ export async function PATCH(
  */
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { id: couponId } = await params;
     // Verify admin authentication
     const authHeader = request.headers.get('authorization');
     if (!authHeader) {
@@ -116,8 +117,6 @@ export async function DELETE(
     if (!profile || profile.role !== 'admin') {
       return NextResponse.json({ error: 'Forbidden - Admin access required' }, { status: 403 });
     }
-
-    const couponId = params.id;
 
     // Check if coupon has been used
     const { data: usages } = await supabase
