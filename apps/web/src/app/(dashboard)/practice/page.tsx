@@ -3,362 +3,370 @@
 import { useState, useEffect } from 'react';
 import { getSupabaseBrowserClient } from '@/lib/supabase/client';
 
-interface PYQ {
-  id: string;
-  question: string;
-  paper: string;
-  year: number;
-  topic?: string;
-  answer?: string;
-  key_points?: string[];
-  approach?: string;
-}
-
 interface PracticeQuestion {
   id: string;
   question: string;
-  options: string[];
-  correct_answer: number;
-  explanation: string;
-  topic: string;
+  year: number;
+  paper: string;
   difficulty: 'easy' | 'medium' | 'hard';
+  marks: number;
+  topic: string;
+  tags: string[];
+  estimatedTime: number; // minutes
+  wordLimit: number;
+  type: 'pyq' | 'current_affairs' | 'case_study';
 }
 
-const PAPERS = [
-  { id: 'all', label: 'All Papers' },
-  { id: 'GS1', label: 'GS Paper I' },
-  { id: 'GS2', label: 'GS Paper II' },
-  { id: 'GS3', label: 'GS Paper III' },
-  { id: 'GS4', label: 'GS Paper IV' },
-  { id: 'CSAT', label: 'CSAT' },
+const TABS = ['GS1', 'GS2', 'GS3', 'GS4', 'Essay'];
+const SUB_TABS = ['Practice', 'Analysis', 'Progress'];
+const QUESTION_TYPES = ['All', 'PYQ', 'Current Affairs', 'Case Studies'];
+const YEARS = ['All Years', '2024', '2023', '2022', '2021', '2020'];
+
+// Demo questions matching reference
+const demoQuestions: PracticeQuestion[] = [
+  {
+    id: '1',
+    question: 'Discuss the impact of climate change on the monsoon patterns in India and its implications for agriculture and water resources.',
+    year: 2024,
+    paper: 'GS1',
+    difficulty: 'medium',
+    marks: 15,
+    topic: 'Geography',
+    tags: ['Climate Change', 'Monsoon', 'Agriculture'],
+    estimatedTime: 20,
+    wordLimit: 250,
+    type: 'pyq',
+  },
+  {
+    id: '2',
+    question: 'Examine the factors responsible for the location of primary, secondary, and tertiary sector industries in various parts of the world.',
+    year: 2024,
+    paper: 'GS1',
+    difficulty: 'hard',
+    marks: 20,
+    topic: 'Geography',
+    tags: ['Industries', 'Economic Geography'],
+    estimatedTime: 25,
+    wordLimit: 300,
+    type: 'pyq',
+  },
+  {
+    id: '3',
+    question: 'Analyze the role of Indian Diaspora in shaping India\'s foreign policy in the 21st century.',
+    year: 2023,
+    paper: 'GS1',
+    difficulty: 'medium',
+    marks: 15,
+    topic: 'International Relations',
+    tags: ['Diaspora', 'Foreign Policy'],
+    estimatedTime: 20,
+    wordLimit: 250,
+    type: 'pyq',
+  },
+  {
+    id: '4',
+    question: 'Discuss the recent developments in India-Middle East-Europe Economic Corridor (IMEC) and its strategic significance.',
+    year: 2024,
+    paper: 'GS2',
+    difficulty: 'medium',
+    marks: 15,
+    topic: 'International Relations',
+    tags: ['IMEC', 'Connectivity', 'Strategic'],
+    estimatedTime: 20,
+    wordLimit: 250,
+    type: 'current_affairs',
+  },
 ];
 
 export default function PracticePage() {
-  const supabase = getSupabaseBrowserClient(
-  );
+  const [selectedTab, setSelectedTab] = useState('GS1');
+  const [selectedSubTab, setSelectedSubTab] = useState('Practice');
+  const [selectedType, setSelectedType] = useState('All');
+  const [selectedYear, setSelectedYear] = useState('All Years');
+  const [questions, setQuestions] = useState<PracticeQuestion[]>(demoQuestions);
 
-  const [pyqs, setPyqs] = useState<PYQ[]>([]);
-  const [selectedPaper, setSelectedPaper] = useState('all');
-  const [selectedYear, setSelectedYear] = useState(2024);
-  const [selectedQuestion, setSelectedQuestion] = useState<PYQ | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  // Demo practice questions
-  const practiceQuestions: PracticeQuestion[] = [
-    {
-      id: '1',
-      question: 'Which article of the Indian Constitution deals with the Right to Equality?',
-      options: ['Article 12', 'Article 14', 'Article 19', 'Article 21'],
-      correct_answer: 1,
-      explanation: 'Article 14 to Article 18 deal with Right to Equality. Article 14 specifically deals with equality before law.',
-      topic: 'Polity',
-      difficulty: 'easy',
-    },
-    {
-      id: '2',
-      question: 'The춘，是中国四大名著之一。其作者是谁？',
-      options: ['施耐庵', '罗贯中', '吴承恩', '曹雪芹'],
-      correct_answer: 2,
-      explanation: '《西游记》的作者是吴承恩。这是一部关于唐僧师徒四人取经的神话小说。',
-      topic: 'Literature',
-      difficulty: 'hard',
-    },
-    {
-      id: '3',
-      question: 'What is the main function of the Reserve Bank of India?',
-      options: ['Issue currency', 'Print government bonds', 'Manage foreign exchange', 'All of the above'],
-      correct_answer: 3,
-      explanation: 'RBI performs all these functions: issuing currency, managing government bonds, and regulating foreign exchange.',
-      topic: 'Economy',
-      difficulty: 'medium',
-    },
-  ];
-
-  // Fetch PYQs
-  useEffect(() => {
-    const fetchPyqs = async () => {
-      setIsLoading(true);
-      let query = supabase
-        .from('pyq_solutions')
-        .select('*')
-        .order('year', { ascending: false });
-
-      if (selectedPaper !== 'all') {
-        query = query.eq('paper', selectedPaper);
-      }
-
-      const { data, error } = await query.limit(20);
-
-      if (!error && data) {
-        setPyqs(data as PYQ[]);
-      }
-      setIsLoading(false);
-    };
-
-    fetchPyqs();
-  }, [selectedPaper, selectedYear]);
-
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [showExplanation, setShowExplanation] = useState(false);
-  const [score, setScore] = useState({ correct: 0, total: 0 });
-
-  const handleAnswer = (answerIndex: number) => {
-    setSelectedAnswer(answerIndex);
-    setShowExplanation(true);
-
-    if (answerIndex === practiceQuestions[currentQuestion].correct_answer) {
-      setScore({ ...score, correct: score.correct + 1 });
+  // Filter questions based on selections
+  const filteredQuestions = questions.filter(q => {
+    if (selectedTab !== 'Essay' && q.paper !== selectedTab) return false;
+    if (selectedType !== 'All') {
+      if (selectedType === 'PYQ' && q.type !== 'pyq') return false;
+      if (selectedType === 'Current Affairs' && q.type !== 'current_affairs') return false;
+      if (selectedType === 'Case Studies' && q.type !== 'case_study') return false;
     }
-    setScore({ ...score, total: score.total + 1 });
-  };
-
-  const nextQuestion = () => {
-    if (currentQuestion < practiceQuestions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-      setSelectedAnswer(null);
-      setShowExplanation(false);
-    }
-  };
-
-  const prevQuestion = () => {
-    if (currentQuestion > 0) {
-      setCurrentQuestion(currentQuestion - 1);
-      setSelectedAnswer(null);
-      setShowExplanation(false);
-    }
-  };
+    if (selectedYear !== 'All Years' && q.year.toString() !== selectedYear) return false;
+    return true;
+  });
 
   return (
-    <div className="min-h-screen p-6">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <header className="mb-8">
-          <h1 className="text-3xl font-bold text-white mb-2">Practice Questions</h1>
-          <p className="text-gray-400">Test your knowledge with previous year questions and practice sets</p>
-        </header>
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-slate-800 text-white px-6 py-8 -mx-6 -mt-6 mb-6 lg:-mx-6 lg:-mt-6">
+        <h1 className="text-2xl font-bold text-center mb-1">Answer Writing Coach</h1>
+        <p className="text-gray-400 text-center text-sm">AI-Powered UPSC Mains Practice</p>
+        
+        {/* Paper Tabs */}
+        <div className="flex justify-center gap-2 mt-6">
+          {TABS.map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setSelectedTab(tab)}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                selectedTab === tab
+                  ? 'bg-green-500 text-white'
+                  : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
+      </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Quick Practice Section */}
-            <div className="neon-glass p-6 rounded-xl">
-              <h2 className="text-xl font-bold text-white mb-4">Quick Practice</h2>
-              <p className="text-gray-400 mb-4">Test yourself with multiple choice questions</p>
-
-              {/* Question */}
-              <div className="mb-6">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className={`px-2 py-0.5 rounded text-xs ${
-                    practiceQuestions[currentQuestion].difficulty === 'easy'
-                      ? 'bg-green-500/20 text-green-400'
-                      : practiceQuestions[currentQuestion].difficulty === 'medium'
-                      ? 'bg-yellow-500/20 text-yellow-400'
-                      : 'bg-red-500/20 text-red-400'
-                  }`}>
-                    {practiceQuestions[currentQuestion].difficulty.toUpperCase()}
-                  </span>
-                  <span className="text-xs text-gray-500">{practiceQuestions[currentQuestion].topic}</span>
-                </div>
-
-                <p className="text-white text-lg mb-4">{practiceQuestions[currentQuestion].question}</p>
-
-                {/* Options */}
-                <div className="space-y-2">
-                  {practiceQuestions[currentQuestion].options.map((option, index) => (
-                    <button
-                      key={index}
-                      onClick={() => !showExplanation && handleAnswer(index)}
-                      disabled={showExplanation}
-                      className={`w-full p-4 text-left rounded-lg transition-all ${
-                        showExplanation
-                          ? index === practiceQuestions[currentQuestion].correct_answer
-                            ? 'bg-green-500/20 border border-green-500/50'
-                            : selectedAnswer === index
-                            ? 'bg-red-500/20 border border-red-500/50'
-                            : 'bg-slate-800/50'
-                          : selectedAnswer === index
-                          ? 'bg-neon-blue/20 border border-neon-blue/50'
-                          : 'bg-slate-800/50 hover:bg-slate-700'
-                      }`}
-                    >
-                      <span className="inline-block w-6 h-6 rounded-full bg-slate-700 text-gray-300 text-sm flex items-center justify-center mr-3">
-                        {String.fromCharCode(65 + index)}
-                      </span>
-                      {option}
-                      {showExplanation && index === practiceQuestions[currentQuestion].correct_answer && (
-                        <svg className="inline-block w-5 h-5 text-green-400 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                        </svg>
-                      )}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Explanation */}
-              {showExplanation && (
-                <div className="mb-4 p-4 bg-slate-800/50 rounded-lg">
-                  <h4 className="text-neon-blue font-medium mb-2">Explanation</h4>
-                  <p className="text-gray-300 text-sm">{practiceQuestions[currentQuestion].explanation}</p>
-                </div>
+      {/* Sub Tabs */}
+      <div className="flex border-b border-gray-200 mb-6">
+        {SUB_TABS.map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setSelectedSubTab(tab)}
+            className={`flex-1 py-3 text-sm font-medium transition-all border-b-2 ${
+              selectedSubTab === tab
+                ? 'text-green-600 border-green-500'
+                : 'text-gray-500 border-transparent hover:text-gray-700'
+            }`}
+          >
+            <div className="flex items-center justify-center gap-2">
+              {tab === 'Practice' && (
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
               )}
-
-              {/* Navigation */}
-              <div className="flex items-center justify-between">
-                <button
-                  onClick={prevQuestion}
-                  disabled={currentQuestion === 0}
-                  className="px-4 py-2 bg-slate-800 rounded-lg text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-700 transition-colors"
-                >
-                  Previous
-                </button>
-                <span className="text-gray-400 text-sm">
-                  {currentQuestion + 1} / {practiceQuestions.length}
-                </span>
-                <button
-                  onClick={nextQuestion}
-                  disabled={currentQuestion === practiceQuestions.length - 1}
-                  className="px-4 py-2 bg-slate-800 rounded-lg text-gray-300 disabled:opacity-50 disabled:cursor-not-allowed hover:bg-slate-700 transition-colors"
-                >
-                  Next
-                </button>
-              </div>
-
-              {/* Score */}
-              <div className="mt-4 pt-4 border-t border-white/10">
-                <p className="text-gray-400 text-sm">
-                  Score: <span className="text-neon-blue font-bold">{score.correct}</span> / {score.total}
-                </p>
-              </div>
+              {tab === 'Analysis' && (
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+              )}
+              {tab === 'Progress' && (
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+              )}
+              {tab}
             </div>
+          </button>
+        ))}
+      </div>
 
-            {/* PYQ Section */}
-            <div className="neon-glass p-6 rounded-xl">
-              <h2 className="text-xl font-bold text-white mb-4">Previous Year Questions</h2>
+      {selectedSubTab === 'Practice' && (
+        <>
+          {/* Practice Questions Header */}
+          <div className="flex items-center gap-2 mb-4">
+            <div className="w-6 h-6 bg-gradient-to-br from-green-400 to-green-600 rounded flex items-center justify-center">
+              <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            </div>
+            <h2 className="text-lg font-bold text-gray-900">Practice Questions</h2>
+          </div>
 
-              {/* Filters */}
-              <div className="flex flex-wrap gap-4 mb-4">
-                <select
-                  value={selectedPaper}
-                  onChange={(e) => setSelectedPaper(e.target.value)}
-                  className="px-4 py-2 bg-slate-800/50 border border-white/10 rounded-lg text-white"
+          {/* Question Type Filter Chips */}
+          <div className="flex flex-wrap gap-2 mb-4">
+            {QUESTION_TYPES.map((type) => (
+              <button
+                key={type}
+                onClick={() => setSelectedType(type)}
+                className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${
+                  selectedType === type
+                    ? 'bg-green-500 text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {type}
+              </button>
+            ))}
+          </div>
+
+          {/* Year Filter Pills */}
+          <div className="mb-6">
+            <span className="text-sm text-gray-500 mr-3">Year:</span>
+            <div className="inline-flex flex-wrap gap-2">
+              {YEARS.map((year) => (
+                <button
+                  key={year}
+                  onClick={() => setSelectedYear(year)}
+                  className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+                    selectedYear === year
+                      ? 'bg-amber-400 text-gray-900'
+                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  }`}
                 >
-                  {PAPERS.map((paper) => (
-                    <option key={paper.id} value={paper.id}>{paper.label}</option>
-                  ))}
-                </select>
-
-                <select
-                  value={selectedYear}
-                  onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-                  className="px-4 py-2 bg-slate-800/50 border border-white/10 rounded-lg text-white"
-                >
-                  {[2024, 2023, 2022, 2021, 2020].map((year) => (
-                    <option key={year} value={year}>{year}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* PYQ List */}
-              {isLoading ? (
-                <div className="text-center py-8">
-                  <div className="animate-spin w-8 h-8 border-2 border-neon-blue border-t-transparent rounded-full mx-auto mb-4"></div>
-                  <p className="text-gray-400">Loading questions...</p>
-                </div>
-              ) : pyqs.length > 0 ? (
-                <div className="space-y-3">
-                  {pyqs.slice(0, 5).map((pyq) => (
-                    <div
-                      key={pyq.id}
-                      onClick={() => setSelectedQuestion(pyq)}
-                      className={`p-4 rounded-lg cursor-pointer transition-all ${
-                        selectedQuestion?.id === pyq.id
-                          ? 'bg-neon-blue/20 border border-neon-blue/50'
-                          : 'bg-slate-800/30 hover:bg-slate-800/50'
-                      }`}
-                    >
-                      <div className="flex items-center gap-2 mb-2">
-                        <span className="px-2 py-0.5 bg-slate-700 text-gray-300 text-xs rounded">
-                          {pyq.paper} {pyq.year}
-                        </span>
-                        {pyq.topic && (
-                          <span className="px-2 py-0.5 bg-neon-blue/20 text-neon-blue text-xs rounded">
-                            {pyq.topic}
-                          </span>
-                        )}
-                      </div>
-                      <p className="text-gray-300 text-sm line-clamp-2">{pyq.question}</p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-400 text-center py-8">
-                  No questions found. Try different filters or generate solutions.
-                </p>
-              )}
+                  {year}
+                </button>
+              ))}
             </div>
           </div>
 
-          {/* Sidebar */}
-          <div className="lg:col-span-1">
-            {selectedQuestion ? (
-              <div className="neon-glass p-6 rounded-xl sticky top-6">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="font-bold text-white">{selectedQuestion.paper} {selectedQuestion.year}</h3>
-                  <button
-                    onClick={() => setSelectedQuestion(null)}
-                    className="text-gray-400 hover:text-white"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                </div>
-
-                <p className="text-white mb-4">{selectedQuestion.question}</p>
-
-                {selectedQuestion.answer && (
-                  <div className="space-y-4">
-                    <div>
-                      <h4 className="text-sm font-medium text-gray-400 mb-2">Answer</h4>
-                      <div className="text-gray-300 whitespace-pre-line">{selectedQuestion.answer}</div>
+          {/* Questions List */}
+          <div className="space-y-4">
+            {filteredQuestions.length > 0 ? (
+              filteredQuestions.map((question) => (
+                <div key={question.id} className="question-card">
+                  {/* Year and Difficulty */}
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                      </svg>
+                      <span className="text-sm font-medium text-gray-700">{question.year}</span>
+                      <span className={`badge-${question.difficulty}`}>
+                        {question.difficulty.toUpperCase()}
+                      </span>
                     </div>
-
-                    {selectedQuestion.key_points && selectedQuestion.key_points.length > 0 && (
-                      <div>
-                        <h4 className="text-sm font-medium text-gray-400 mb-2">Key Points</h4>
-                        <ul className="space-y-1">
-                          {selectedQuestion.key_points.map((point, index) => (
-                            <li key={index} className="text-gray-300 text-sm flex items-start gap-2">
-                              <span className="w-1.5 h-1.5 rounded-full bg-neon-blue mt-1.5"></span>
-                              {point}
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    <button className="w-full btn-primary mt-4">
-                      Get Detailed Solution
-                    </button>
+                    <span className="text-blue-600 font-semibold">{question.marks} marks</span>
                   </div>
-                )}
-              </div>
+
+                  {/* Question Text */}
+                  <p className="text-gray-900 mb-4 leading-relaxed">{question.question}</p>
+
+                  {/* Tags */}
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {question.tags.map((tag, idx) => (
+                      <span key={idx} className="filter-chip">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+
+                  {/* Meta Info */}
+                  <div className="flex items-center gap-6 text-sm text-gray-500">
+                    <div className="flex items-center gap-1">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      <span>{question.estimatedTime} min</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <span className="font-medium">Tr</span>
+                      <span>{question.wordLimit} words</span>
+                    </div>
+                  </div>
+                </div>
+              ))
             ) : (
-              <div className="neon-glass p-6 rounded-xl">
-                <h3 className="font-bold text-white mb-3">Generate Solutions</h3>
-                <p className="text-gray-400 text-sm mb-4">
-                  Get detailed solutions with answer approach for any UPSC question
-                </p>
-                <button className="w-full btn-primary">
-                  Ask a Question
-                </button>
+              <div className="text-center py-12">
+                <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 mb-1">No questions found</h3>
+                <p className="text-gray-500">Try adjusting your filters</p>
               </div>
             )}
           </div>
+        </>
+      )}
+
+      {selectedSubTab === 'Analysis' && (
+        <div className="text-center py-12">
+          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          </div>
+          <h3 className="text-lg font-medium text-gray-900 mb-1">Answer Analysis</h3>
+          <p className="text-gray-500 mb-4">Get AI-powered feedback on your answers</p>
+          <button className="btn-primary">Start Analysis</button>
         </div>
-      </div>
+      )}
+
+      {selectedSubTab === 'Progress' && (
+        <div className="space-y-6">
+          {/* Progress Stats */}
+          <div className="card p-6">
+            <h3 className="font-bold text-gray-900 mb-4">Your Progress</h3>
+            <div className="grid grid-cols-3 gap-4 text-center">
+              <div>
+                <p className="text-3xl font-bold text-blue-600">0</p>
+                <p className="text-sm text-gray-500">MCQs Attempted</p>
+              </div>
+              <div>
+                <p className="text-3xl font-bold text-green-600">0%</p>
+                <p className="text-sm text-gray-500">Overall Accuracy</p>
+              </div>
+              <div>
+                <p className="text-3xl font-bold text-purple-600">0</p>
+                <p className="text-sm text-gray-500">Question Banks</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Practice Modes */}
+          <div>
+            <h3 className="font-bold text-gray-900 mb-4">Practice Modes</h3>
+            <div className="space-y-3">
+              <div className="practice-mode-card border-l-emerald-500">
+                <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center">
+                  <svg className="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-medium text-gray-900">Topic-wise Practice</h4>
+                  <p className="text-sm text-gray-500">Focus on specific subjects or chapters</p>
+                </div>
+                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+
+              <div className="practice-mode-card border-l-blue-500">
+                <div className="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center">
+                  <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-medium text-gray-900">Mixed Practice</h4>
+                  <p className="text-sm text-gray-500">Random questions from all topics</p>
+                </div>
+                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+
+              <div className="practice-mode-card border-l-amber-500">
+                <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center">
+                  <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-medium text-gray-900">Timed Practice</h4>
+                  <p className="text-sm text-gray-500">Prelims simulation mode</p>
+                </div>
+                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+
+              <div className="practice-mode-card border-l-purple-500">
+                <div className="w-10 h-10 rounded-xl bg-purple-100 flex items-center justify-center">
+                  <svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                  </svg>
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-medium text-gray-900">Adaptive Mode</h4>
+                  <p className="text-sm text-gray-500">AI adjusts difficulty based on performance</p>
+                </div>
+                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

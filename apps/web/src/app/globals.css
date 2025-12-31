@@ -1,274 +1,384 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 @layer base {
   :root {
-    --background: 222.2 84% 4.9%; /* Slate 950 */
-    --foreground: 210 40% 98%; /* Slate 50 */
- 
-    --card: 0 0% 100%; /* White cards as seen in images */
-    --card-foreground: 222.2 84% 4.9%;
- 
+    /* Light Theme - Apple Style (Default) */
+    --background: 0 0% 98%; /* Light gray */
+    --foreground: 222.2 84% 4.9%; /* Dark slate */
+
+    --card: 0 0% 100%; /* White cards */
+    --card-foreground: 222.2 47% 11%;
+
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
- 
-    --primary: 217.2 91.2% 59.8%; /* Blue */
-    --primary-foreground: 222.2 47.4% 11.2%;
- 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
- 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
- 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
- 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
- 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
- 
-    --radius: 0.75rem;
+    --popover-foreground: 222.2 47% 11%;
 
-    /* Custom Neon Variables */
-    --neon-blue: #00f3ff;
-    --neon-purple: #bc13fe;
-    --neon-green: #00ff9d;
-    --neon-pink: #ff006b;
+    --primary: 217 91% 60%; /* Blue */
+    --primary-foreground: 0 0% 100%;
 
-    /* Dynamic Background Variables (AI-driven theme system) */
-    --bg-dynamic-primary: linear-gradient(180deg, hsl(222, 84%, 4.9%) 0%, hsl(217, 32%, 12%) 100%);
-    --bg-dynamic-hero: radial-gradient(ellipse at top, hsl(217, 91%, 20%) 0%, transparent 50%);
-    --bg-dynamic-section: linear-gradient(135deg, hsl(217, 32%, 10%) 0%, hsl(222, 84%, 4.9%) 100%);
-    --bg-dynamic-overlay: linear-gradient(180deg, transparent 0%, hsl(222, 84%, 4.9%) 100%);
+    --secondary: 210 40% 96%;
+    --secondary-foreground: 222.2 47% 11%;
 
-    /* Glassmorphism Variables */
-    --glass-bg: rgba(255, 255, 255, 0.05);
-    --glass-border: rgba(255, 255, 255, 0.1);
-    --glass-blur: 24px;
+    --muted: 210 40% 96%;
+    --muted-foreground: 215 16% 47%;
 
-    /* Neumorphism Variables */
-    --neuro-shadow-dark: rgba(0, 0, 0, 0.3);
-    --neuro-shadow-light: rgba(255, 255, 255, 0.02);
+    --accent: 210 40% 96%;
+    --accent-foreground: 222.2 47% 11%;
+
+    --success: 142 71% 45%; /* Green */
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%; /* Orange */
+    --warning-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 217 91% 60%;
+
+    --radius: 1rem;
+
+    /* Brand Colors */
+    --brand-blue: #2563eb;
+    --brand-blue-dark: #1d4ed8;
+    --brand-blue-light: #3b82f6;
+    --brand-green: #22c55e;
+    --brand-green-dark: #16a34a;
+    --brand-orange: #f59e0b;
+    --brand-purple: #8b5cf6;
+    --brand-teal: #14b8a6;
+
+    /* Header Gradient */
+    --header-gradient: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #1e3a8a 100%);
+    
+    /* Soft Shadows (Apple-style) */
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.05);
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
   }
- 
+
   .dark {
     --background: 222.2 84% 4.9%;
     --foreground: 210 40% 98%;
- 
-    --card: 222.2 84% 4.9%;
+    --card: 222.2 84% 6%;
     --card-foreground: 210 40% 98%;
- 
-    --popover: 222.2 84% 4.9%;
+    --popover: 222.2 84% 6%;
     --popover-foreground: 210 40% 98%;
- 
-    --primary: 217.2 91.2% 59.8%;
-    --primary-foreground: 222.2 47.4% 11.2%;
- 
-    --secondary: 217.2 32.6% 17.5%;
+    --primary: 217 91% 60%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 217 33% 17%;
     --secondary-foreground: 210 40% 98%;
- 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
- 
-    --accent: 217.2 32.6% 17.5%;
+    --muted: 217 33% 17%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 217 33% 17%;
     --accent-foreground: 210 40% 98%;
- 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 63% 31%;
     --destructive-foreground: 210 40% 98%;
- 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 224.3 76.3% 48%;
+    --border: 217 33% 17%;
+    --input: 217 33% 17%;
+    --ring: 224 76% 48%;
   }
 }
- 
+
 @layer base {
   * {
     @apply border-border;
   }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+  
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
 
-/* Custom Component Classes from previous globals.css preserved but updated */
+/* Apple-Style Components */
 @layer components {
-  /* Neumorphic Button Variants */
+  /* Primary Button - Blue gradient */
   .btn-primary {
     @apply px-6 py-3 rounded-xl font-semibold text-white transition-all duration-200;
-    background: linear-gradient(135deg, var(--neon-blue) 0%, var(--neon-purple) 100%);
-    box-shadow: 0 4px 15px rgba(0, 243, 255, 0.3),
-                inset 0 1px 2px rgba(255, 255, 255, 0.1);
+    background: linear-gradient(135deg, var(--brand-blue) 0%, var(--brand-blue-light) 100%);
+    box-shadow: var(--shadow-md);
   }
   
   .btn-primary:hover {
-    box-shadow: 0 6px 20px rgba(0, 243, 255, 0.5),
-                inset 0 1px 2px rgba(255, 255, 255, 0.1);
     transform: translateY(-1px);
-  }
-
-  .btn-secondary {
-    @apply px-6 py-3 rounded-xl font-semibold text-foreground transition-all duration-200;
-    background: rgba(30, 30, 50, 0.5);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 3px 3px 6px var(--neuro-shadow-dark),
-                -2px -2px 4px var(--neuro-shadow-light);
+    box-shadow: var(--shadow-lg);
   }
   
-  .btn-secondary:hover {
-    background: rgba(40, 40, 60, 0.6);
-    box-shadow: 4px 4px 8px var(--neuro-shadow-dark),
-                -3px -3px 6px var(--neuro-shadow-light);
+  .btn-primary:active {
+    transform: translateY(0);
   }
 
-  .btn-ghost {
-    @apply px-6 py-3 rounded-xl font-semibold text-foreground transition-all duration-200;
-    background: transparent;
-    border: 1px solid rgba(255, 255, 255, 0.05);
-  }
-  
-  .btn-ghost:hover {
-    background: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.1);
-  }
-
-  .btn-danger {
+  /* Success Button - Green */
+  .btn-success {
     @apply px-6 py-3 rounded-xl font-semibold text-white transition-all duration-200;
-    background: linear-gradient(135deg, #ff006b 0%, #ff0044 100%);
-    box-shadow: 0 4px 15px rgba(255, 0, 107, 0.3);
+    background: linear-gradient(135deg, var(--brand-green) 0%, var(--brand-green-dark) 100%);
+    box-shadow: var(--shadow-md);
   }
   
-  .btn-danger:hover {
-    box-shadow: 0 6px 20px rgba(255, 0, 107, 0.5);
+  .btn-success:hover {
     transform: translateY(-1px);
+    box-shadow: var(--shadow-lg);
   }
 
-  .neon-glass {
-    @apply bg-slate-900/60 backdrop-blur-xl border border-white/10;
+  /* Warning/CTA Button - Orange */
+  .btn-warning {
+    @apply px-6 py-3 rounded-xl font-semibold text-white transition-all duration-200;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    box-shadow: var(--shadow-md);
+  }
+  
+  .btn-warning:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lg);
   }
 
-  .gradient-text {
-    @apply bg-gradient-to-r from-neon-blue via-neon-purple to-neon-pink bg-clip-text text-transparent;
-  }
-  
-  /* Glassmorphism Components */
-  .glass-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(var(--glass-blur));
-    border: 1px solid var(--glass-border);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    @apply rounded-2xl;
-  }
-  
-  .glass-card:hover {
-    background: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 4px 20px rgba(0, 243, 255, 0.2);
-  }
-  
-  .glass-panel {
-    background: rgba(15, 15, 25, 0.4);
-    backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    @apply rounded-2xl;
+  /* Secondary Button */
+  .btn-secondary {
+    @apply px-6 py-3 rounded-xl font-semibold transition-all duration-200;
+    @apply bg-gray-100 text-gray-700 hover:bg-gray-200;
+    box-shadow: var(--shadow-sm);
   }
 
-  .glass-input {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    @apply rounded-xl px-4 py-3 text-foreground transition-all duration-200;
-  }
-  
-  .glass-input:focus {
-    background: rgba(255, 255, 255, 0.08);
-    border-color: var(--neon-blue);
-    box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
-    outline: none;
+  /* Ghost Button */
+  .btn-ghost {
+    @apply px-6 py-3 rounded-xl font-semibold transition-all duration-200;
+    @apply bg-transparent text-gray-600 hover:bg-gray-100;
   }
 
-  /* Neumorphic Components */
-  .neuro-card {
-    background: rgba(20, 20, 35, 0.5);
-    box-shadow: 6px 6px 12px var(--neuro-shadow-dark),
-                -4px -4px 8px var(--neuro-shadow-light);
-    @apply rounded-2xl p-6;
-  }
-
-  .neuro-input {
-    background: rgba(20, 20, 35, 0.4);
-    box-shadow: inset 3px 3px 6px var(--neuro-shadow-dark),
-                inset -2px -2px 4px var(--neuro-shadow-light);
-    @apply rounded-xl px-4 py-3 text-foreground transition-all duration-200;
-    border: none;
+  /* Card Styles - Clean white with soft shadow */
+  .card {
+    @apply bg-white rounded-2xl p-6;
+    box-shadow: var(--shadow-md);
   }
   
-  .neuro-input:focus {
-    box-shadow: inset 4px 4px 8px var(--neuro-shadow-dark),
-                inset -3px -3px 6px var(--neuro-shadow-light),
-                0 0 0 2px var(--neon-blue);
-    outline: none;
+  .card:hover {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .card-sm {
+    @apply bg-white rounded-xl p-4;
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Feature Card with colored accent */
+  .feature-card {
+    @apply bg-white rounded-2xl p-5 relative overflow-hidden transition-all duration-300;
+    box-shadow: var(--shadow-md);
+  }
+  
+  .feature-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .feature-card-green {
+    @apply bg-gradient-to-br from-emerald-500 to-green-600 text-white rounded-2xl p-5;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .feature-card-blue {
+    @apply bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-2xl p-5;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .feature-card-purple {
+    @apply bg-gradient-to-br from-purple-500 to-purple-600 text-white rounded-2xl p-5;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .feature-card-orange {
+    @apply bg-gradient-to-br from-orange-400 to-amber-500 text-white rounded-2xl p-5;
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* Header - Blue gradient like reference */
+  .app-header {
+    background: var(--header-gradient);
+    @apply text-white;
+  }
+
+  /* Trial Banner - Orange/Yellow */
+  .trial-banner {
+    @apply rounded-xl px-4 py-3 flex items-center justify-between;
+    background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  }
+
+  /* Tab Pills - Like reference images */
+  .tab-pill {
+    @apply px-4 py-2 rounded-full text-sm font-medium transition-all duration-200;
+    @apply bg-gray-100 text-gray-600 hover:bg-gray-200;
+  }
+  
+  .tab-pill.active {
+    @apply bg-blue-600 text-white;
+  }
+  
+  .tab-pill-green.active {
+    @apply bg-green-500 text-white;
+  }
+
+  /* Filter Chip */
+  .filter-chip {
+    @apply px-3 py-1.5 rounded-full text-xs font-medium;
+    @apply bg-emerald-100 text-emerald-700;
+  }
+
+  /* Year Filter Pills */
+  .year-pill {
+    @apply px-4 py-1.5 rounded-full text-sm font-medium transition-all;
+    @apply bg-gray-100 text-gray-600 hover:bg-gray-200;
+  }
+  
+  .year-pill.active {
+    @apply bg-amber-400 text-gray-900;
+  }
+
+  /* Difficulty Badges */
+  .badge-easy {
+    @apply px-2.5 py-0.5 rounded text-xs font-semibold uppercase;
+    @apply bg-green-100 text-green-700;
+  }
+  
+  .badge-medium {
+    @apply px-2.5 py-0.5 rounded text-xs font-semibold uppercase;
+    @apply bg-amber-100 text-amber-700;
+  }
+  
+  .badge-hard {
+    @apply px-2.5 py-0.5 rounded text-xs font-semibold uppercase;
+    @apply bg-red-100 text-red-700;
+  }
+
+  /* Progress Card with icon */
+  .progress-card {
+    @apply bg-white rounded-2xl p-5 flex flex-col items-start;
+    box-shadow: var(--shadow-md);
+  }
+  
+  .progress-icon {
+    @apply w-12 h-12 rounded-xl flex items-center justify-center mb-3;
+  }
+  
+  .progress-icon-blue {
+    @apply bg-blue-100 text-blue-600;
+  }
+  
+  .progress-icon-purple {
+    @apply bg-purple-100 text-purple-600;
+  }
+  
+  .progress-icon-teal {
+    @apply bg-teal-100 text-teal-600;
+  }
+  
+  .progress-icon-orange {
+    @apply bg-orange-100 text-orange-600;
+  }
+
+  /* Practice Mode Card with colored left border */
+  .practice-mode-card {
+    @apply bg-white rounded-xl p-4 flex items-center gap-4 border-l-4;
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .practice-mode-card:hover {
+    box-shadow: var(--shadow-md);
+  }
+
+  /* Input Fields */
+  .input {
+    @apply w-full px-4 py-3 rounded-xl border border-gray-200 bg-white;
+    @apply text-gray-900 placeholder-gray-400;
+    @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+    @apply transition-all duration-200;
+  }
+
+  /* Question Card */
+  .question-card {
+    @apply bg-white rounded-2xl p-5 border border-gray-100;
+    box-shadow: var(--shadow-sm);
+  }
+  
+  .question-card:hover {
+    box-shadow: var(--shadow-md);
+    @apply border-blue-200;
+  }
+
+  /* Sidebar for dashboard */
+  .sidebar {
+    @apply bg-slate-800 text-white;
+  }
+  
+  .sidebar-link {
+    @apply flex items-center gap-3 px-4 py-3 rounded-lg text-gray-300 transition-all duration-200;
+    @apply hover:bg-white/10 hover:text-white;
+  }
+  
+  .sidebar-link.active {
+    @apply bg-white/10 text-white font-medium;
+  }
+
+  /* Stats Grid */
+  .stats-grid {
+    @apply grid grid-cols-2 gap-4;
+  }
+
+  /* Feature Grid */
+  .feature-grid {
+    @apply grid grid-cols-2 gap-4;
   }
 }
 
 /* Utility Animations */
 @layer utilities {
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
-  }
-  
-  .animate-pulse-glow {
-    animation: pulse-glow 2s ease-in-out infinite;
-  }
-
-  .animate-shimmer {
-    animation: shimmer 2s linear infinite;
-  }
-
   .animate-fade-in {
     animation: fadeIn 200ms ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 300ms ease-out forwards;
   }
 
   .animate-slide-in {
     animation: slideIn 300ms ease-out forwards;
   }
 
-  /* Accessibility: Respect reduced motion preference */
+  .animate-bounce-subtle {
+    animation: bounceSubtle 2s ease-in-out infinite;
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .animate-float,
-    .animate-pulse-glow,
-    .animate-shimmer,
     .animate-fade-in,
-    .animate-slide-in {
+    .animate-slide-up,
+    .animate-slide-in,
+    .animate-bounce-subtle {
       animation: none;
     }
   }
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
-}
-
-@keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 20px rgba(0, 243, 255, 0.3); }
-  50% { box-shadow: 0 0 40px rgba(0, 243, 255, 0.6); }
-}
-
-@keyframes shimmer {
-  0% { background-position: -200% center; }
-  100% { background-position: 200% center; }
-}
-
 @keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
   from {
+    transform: translateY(20px);
     opacity: 0;
   }
   to {
+    transform: translateY(0);
     opacity: 1;
   }
 }
@@ -284,14 +394,45 @@
   }
 }
 
-/* Scrollbar */
+@keyframes bounceSubtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+/* Scrollbar - Light theme */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
+
 ::-webkit-scrollbar-track {
-  @apply bg-transparent;
+  @apply bg-gray-100;
 }
+
 ::-webkit-scrollbar-thumb {
-  @apply bg-slate-700/50 rounded-full hover:bg-slate-600/50;
+  @apply bg-gray-300 rounded-full hover:bg-gray-400;
+}
+
+/* Safe area for mobile */
+@supports (padding: max(0px)) {
+  .safe-area-top {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+  .safe-area-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+}
+
+/* Legacy class support */
+.neon-glass {
+  @apply bg-white/90 backdrop-blur-xl border border-gray-200;
+}
+
+.glass-card {
+  @apply bg-white rounded-2xl;
+  box-shadow: var(--shadow-md);
+}
+
+.gradient-text {
+  @apply bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 bg-clip-text text-transparent;
 }
