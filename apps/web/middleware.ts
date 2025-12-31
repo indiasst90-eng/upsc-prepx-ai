@@ -1,6 +1,36 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+// Public routes that don't require authentication
+const PUBLIC_ROUTES = [
+  '/',
+  '/login',
+  '/signup',
+  '/forgot-password',
+  '/reset-password',
+  '/auth/callback',
+  '/api/webhooks',
+  '/api/health',
+  '/pricing',
+];
+
+// Routes that require subscription/trial
+const PREMIUM_ROUTES = [
+  '/notes',
+  '/practice',
+  '/videos',
+  '/essay',
+  '/ethics',
+  '/interview',
+  '/memory',
+  '/mindmap',
+  '/flashcards',
+  '/documentary',
+  '/lectures',
+  '/predictor',
+  '/schedule',
+];
+
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({
     request: {
@@ -54,29 +84,82 @@ export async function middleware(request: NextRequest) {
     }
   )
 
-  const { data: { session } } = await supabase.auth.getSession()
+  const pathname = request.nextUrl.pathname;
 
-  // Protected routes
-  if (request.nextUrl.pathname.startsWith('/dashboard') ||
-      request.nextUrl.pathname.startsWith('/admin')) {
-    if (!session) {
-      const redirectUrl = request.nextUrl.clone()
-      redirectUrl.pathname = '/login'
-      redirectUrl.searchParams.set('redirect', request.nextUrl.pathname)
-      return NextResponse.redirect(redirectUrl)
-    }
+  // Allow public routes
+  const isPublicRoute = PUBLIC_ROUTES.some(route => pathname.startsWith(route));
+  if (isPublicRoute) {
+    return response;
   }
 
-  // Admin-only routes
-  if (request.nextUrl.pathname.startsWith('/admin')) {
+  // Allow static assets and API routes (except protected ones)
+  if (pathname.startsWith('/_next') || 
+      pathname.startsWith('/favicon') ||
+      pathname.includes('.')) {
+    return response;
+  }
+
+  // Get session
+  const { data: { session } } = await supabase.auth.getSession()
+
+  // If no session, redirect to login
+  if (!session) {
+    const redirectUrl = request.nextUrl.clone()
+    redirectUrl.pathname = '/login'
+    redirectUrl.searchParams.set('redirect', pathname)
+    return NextResponse.redirect(redirectUrl)
+  }
+
+  // Admin-only routes check
+  if (pathname.startsWith('/admin')) {
     const { data: profile } = await supabase
       .from('user_profiles')
       .select('role')
-      .eq('user_id', session!.user.id)
+      .eq('user_id', session.user.id)
       .single()
 
     if (profile?.role !== 'admin') {
-      return NextResponse.redirect(new URL('/dashboard', request.url))
+      return NextResponse.redirect(new URL('/', request.url))
+    }
+  }
+
+  // Premium routes - check subscription/trial status
+  const isPremiumRoute = PREMIUM_ROUTES.some(route => pathname.startsWith(route));
+  if (isPremiumRoute) {
+    // Check user's subscription status
+    const { data: subscription } = await supabase
+      .from('subscriptions')
+      .select('status, trial_end, plan_id')
+      .eq('user_id', session.user.id)
+      .single()
+
+    // If no subscription record, check if trial should be created
+    if (!subscription) {
+      // Create trial subscription for new users
+      const trialEnd = new Date();
+      trialEnd.setDate(trialEnd.getDate() + 1); // 1 day trial
+      
+      await supabase.from('subscriptions').insert({
+        user_id: session.user.id,
+        status: 'trialing',
+        trial_end: trialEnd.toISOString(),
+        plan_id: 'trial',
+        created_at: new Date().toISOString(),
+      });
+    } else {
+      // Check if trial has expired
+      if (subscription.status === 'trialing' && subscription.trial_end) {
+        const trialEndDate = new Date(subscription.trial_end);
+        if (trialEndDate < new Date()) {
+          // Trial expired - redirect to pricing
+          return NextResponse.redirect(new URL('/pricing?expired=true', request.url))
+        }
+      }
+      
+      // Check if subscription is active
+      if (subscription.status !== 'active' && subscription.status !== 'trialing') {
+        return NextResponse.redirect(new URL('/pricing', request.url))
+      }
     }
   }
 
@@ -84,5 +167,14 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/dashboard/:path*', '/admin/:path*', '/search']
+  matcher: [
+    /*
+     * Match all request paths except:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * - public files (public folder)
+     */
+    '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
 }
