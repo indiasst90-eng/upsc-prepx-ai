@@ -5,7 +5,7 @@
 
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { DocumentaryChapterTemplate, DEFAULT_TEMPLATE_CONFIG, MUSIC_TRACKS, TRANSITION_TYPES } from '@/components/documentary/DocumentaryChapterTemplate';
@@ -38,7 +38,15 @@ interface ScriptData {
   credits_data: any;
 }
 
-export default function DocumentaryRenderPage() {
+export default function DocumentaryRenderPageWrapper() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="text-center"><div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto"></div><p className="mt-4 text-gray-600">Loading...</p></div></div>}>
+      <DocumentaryRenderPage />
+    </Suspense>
+  );
+}
+
+function DocumentaryRenderPage() {
   const searchParams = useSearchParams();
   const scriptId = searchParams.get('id');
 
