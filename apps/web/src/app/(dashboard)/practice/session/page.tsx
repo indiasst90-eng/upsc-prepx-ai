@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { createBrowserClient } from '@supabase/ssr';
 
@@ -30,7 +30,15 @@ interface SessionConfig {
 
 type SessionPhase = 'config' | 'active' | 'paused' | 'complete';
 
-export default function PracticeSessionPage() {
+export default function PracticeSessionPageWrapper() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="text-center"><div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto"></div><p className="mt-4 text-gray-600">Loading...</p></div></div>}>
+      <PracticeSessionPage />
+    </Suspense>
+  );
+}
+
+function PracticeSessionPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const resumeId = searchParams.get('resume');
