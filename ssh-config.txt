@@ -1,0 +1,4 @@
+Host upsc-vps
+    HostName 89.117.60.144
+    User root
+    Password 772877mAmcIaS

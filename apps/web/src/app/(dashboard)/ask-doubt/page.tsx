@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/providers/AuthProvider';
 import TextInput from '@/components/doubt/TextInput';
@@ -12,7 +12,21 @@ import VoicePreferenceSelector from '@/components/doubt/VoicePreferenceSelector'
 
 type InputType = 'text' | 'image' | 'voice';
 
-export default function AskDoubtPage() {
+export default function AskDoubtPageWrapper() {
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  
+  if (!mounted) {
+    return <div className="flex items-center justify-center min-h-screen"><div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full"></div></div>;
+  }
+  
+  return <AskDoubtPage />;
+}
+
+function AskDoubtPage() {
   const router = useRouter();
   const { user } = useAuth();
   const [activeInput, setActiveInput] = useState<InputType>('text');
