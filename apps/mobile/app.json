@@ -3,10 +3,10 @@
     "name": "UPSC PrepX AI",
     "slug": "upsc-prepx-ai",
     "version": "1.0.0",
+    "sdkVersion": "54.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
-    "newArchEnabled": true,
     "owner": "shiv.criticalpatient.helper",
     "splash": {
       "image": "./assets/splash-icon.png",
@@ -23,8 +23,6 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#1a1a2e"
       },
-      "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false,
       "permissions": [
         "android.permission.INTERNET",
         "android.permission.ACCESS_NETWORK_STATE"
