@@ -254,22 +254,27 @@ function NotesPage() {
     setShowPaywall(false);
 
     try {
-      const { data, error } = await supabase.functions.invoke('notes_generation_pipe', {
-        body: {
+      // Use API route instead of Edge Function
+      const response = await fetch('/api/notes/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           topic,
           level: selectedLevel,
           format: 'mixed',
           include_diagrams: true,
           include_examples: true,
-        },
+        }),
       });
 
-      if (error) {
-        if (error.message?.includes('entitlement') || error.message?.includes('paywall')) {
+      const data = await response.json();
+      
+      if (!response.ok) {
+        if (data.error?.includes('entitlement') || data.error?.includes('paywall')) {
           setShowPaywall(true);
           return;
         }
-        throw error;
+        throw new Error(data.error || 'Failed to generate notes');
       }
 
       // Refresh notes list
