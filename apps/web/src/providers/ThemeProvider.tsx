@@ -59,7 +59,7 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
         .from('system_config')
         .select('config_value')
         .eq('config_key', 'theme_backgrounds')
-        .single();
+        .single() as { data: { config_value: Partial<ThemeConfig> } | null; error: Error | null };
 
       if (error) {
         console.warn('Theme fetch failed, using default:', error.message);
