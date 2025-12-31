@@ -34,7 +34,8 @@ const SearchBar = React.forwardRef<HTMLInputElement, SearchBarProps>(
     const [value, setValue] = React.useState(controlledValue || '');
     const [isFocused, setIsFocused] = React.useState(false);
     const [showSuggestions, setShowSuggestions] = React.useState(false);
-    const inputRef = React.useRef<HTMLInputElement>(null);
+    const localRef = React.useRef<HTMLInputElement>(null);
+    const inputRef = localRef as React.MutableRefObject<HTMLInputElement | null>;
 
     // Sync controlled value
     React.useEffect(() => {
@@ -119,10 +120,11 @@ const SearchBar = React.forwardRef<HTMLInputElement, SearchBarProps>(
           {/* Input Field */}
           <input
             ref={(node) => {
-              // Assign to both refs
-              if (inputRef) inputRef.current = node;
+              // Assign to internal ref
+              (inputRef as React.MutableRefObject<HTMLInputElement | null>).current = node;
+              // Forward external ref
               if (typeof ref === 'function') ref(node);
-              else if (ref) ref.current = node;
+              else if (ref) (ref as React.MutableRefObject<HTMLInputElement | null>).current = node;
             }}
             type="text"
             value={value}
