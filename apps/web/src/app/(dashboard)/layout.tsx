@@ -1,9 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from '@/app/providers/AuthProvider';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLanguage, getLocalizedText } from '@/contexts/LanguageContext';
 import LanguageToggle from '@/components/LanguageToggle';
 
@@ -64,9 +64,34 @@ function DashboardLayoutContent({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const { user, signOut } = useAuth();
+  const router = useRouter();
+  const { user, signOut, isLoading } = useAuth();
   const { t } = useLanguage();
   const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  // Client-side auth protection as fallback
+  useEffect(() => {
+    if (!isLoading && !user) {
+      router.push('/login?redirect=' + encodeURIComponent(pathname || '/'));
+    }
+  }, [user, isLoading, router, pathname]);
+
+  // Show loading state while checking auth
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-400">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Don't render dashboard if not authenticated
+  if (!user) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen flex">

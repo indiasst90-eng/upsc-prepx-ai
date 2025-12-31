@@ -86,8 +86,13 @@ export async function middleware(request: NextRequest) {
 
   const pathname = request.nextUrl.pathname;
 
-  // Allow public routes
-  const isPublicRoute = PUBLIC_ROUTES.some(route => pathname.startsWith(route));
+  // Allow public routes - use exact match for '/' and startsWith for others
+  const isPublicRoute = PUBLIC_ROUTES.some(route => {
+    if (route === '/') {
+      return pathname === '/';
+    }
+    return pathname === route || pathname.startsWith(route + '/');
+  });
   if (isPublicRoute) {
     return response;
   }
@@ -124,7 +129,9 @@ export async function middleware(request: NextRequest) {
   }
 
   // Premium routes - check subscription/trial status
-  const isPremiumRoute = PREMIUM_ROUTES.some(route => pathname.startsWith(route));
+  const isPremiumRoute = PREMIUM_ROUTES.some(route => 
+    pathname === route || pathname.startsWith(route + '/')
+  );
   if (isPremiumRoute) {
     // Check user's subscription status
     const { data: subscription } = await supabase
